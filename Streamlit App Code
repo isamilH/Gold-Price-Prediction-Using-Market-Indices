@@ -1,0 +1,31 @@
+import streamlit as st
+import pickle
+import numpy as np
+
+# Load the trained model
+model = pickle.load(open('model.pkl', 'rb'))
+
+# App title
+st.title("Gold Price Prediction App")
+
+# Sidebar for user inputs
+st.sidebar.header("Input Market Data")
+st.sidebar.markdown("Provide the latest market data to predict gold prices.")
+
+# Input fields for the features
+crude_oil = st.sidebar.number_input("Crude Oil Price (CL=F)", min_value=0.0, value=80.0, step=0.1)
+silver_price = st.sidebar.number_input("Silver Price (SI=F)", min_value=0.0, value=20.0, step=0.1)
+dollar_index = st.sidebar.number_input("Dollar Index (DX-Y.NYB)", min_value=0.0, value=100.0, step=0.1)
+sp500 = st.sidebar.number_input("S&P 500 Index (^GSPC)", min_value=0.0, value=4000.0, step=1.0)
+interest_rate = st.sidebar.number_input("Interest Rate (^IRX)", min_value=0.0, value=2.0, step=0.1)
+
+# Convert user input to array
+input_features = np.array([[crude_oil, silver_price, dollar_index, sp500, interest_rate]])
+
+# Predict button
+if st.button("Predict Gold Price"):
+    # Make prediction
+    prediction = model.predict(input_features)
+    
+    # Display the result
+    st.success(f"Predicted Gold Price: ${prediction[0]:,.2f}")
